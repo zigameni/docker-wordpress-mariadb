@@ -1,0 +1,43 @@
+version: "3"
+services:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root
+    
+  db:
+    image: mariadb:latest
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: ziga
+      MYSQL_PASSWORD: ziga
+
+
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./wordpress1:/var/www/html/
+      - type: bind
+        source: ./wordpress1/wp-config.php
+        target: /var/www/html/wp-config.php
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: ziga
+      WORDPRESS_DB_PASSWORD: ziga
+      WORDPRESS_DB_NAME: wordpress
+    depends_on:
+      - db
+
+volumes:
+  db_data:
+
+
